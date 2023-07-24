@@ -1,0 +1,42 @@
+# Updated redis-statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis-server
+  namespace: demo
+spec:
+  selector:
+    matchLabels:
+      app: redis-server
+  serviceName: redis-service
+  replicas: 2  # Adjust the number of replicas as needed
+  updateStrategy:
+    type: RollingUpdate  # Ensure RollingUpdate strategy is used
+  template:
+    metadata:
+      labels:
+        app: redis-server
+    spec:
+      containers:
+        - name: redis-server
+          image: redis:latest  # Update to the desired Redis image version
+          command: ["redis-server", "/redis-master/redis.conf"]
+          env: []
+          resources:
+            limits:
+              cpu: "300m"
+              memory: "300Mi"
+          volumeMounts:
+            - name: redis-data
+              mountPath: /var/lib/redis
+            - name: redis-config
+              mountPath: /redis-master/redis.conf
+              subPath: redis.conf
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: redis-data-pvc
+        - name: redis-config
+          configMap:
+            name: redis-config
+
