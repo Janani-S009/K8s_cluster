@@ -109,3 +109,17 @@ nodeGroups: # Refer: https://github.com/weaveworks/eksctl/blob/main/examples/05-
       - key: exampleTaint
         value: "true"
         effect: NoSchedule
+  - name: nodegroup-with-taint
+    instanceType: t2.medium
+    desiredCapacity: 1
+    minSize: 0
+    maxSize: 5
+    privateNetworking: true # Include only in the private subnet
+    subnets:
+      - subnet-0be0c237d7f374bd7  # Replace with the actual private subnet ID in AZ A
+
+    # Taint configuration for the nodegroup
+    taints:
+      - key: example-key
+        value: example-value
+        effect: NoSchedule
