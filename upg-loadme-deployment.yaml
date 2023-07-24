@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upg-loadme
+  namespace: demo
+  labels:
+    app: upg-loadme
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upg-loadme
+  template:
+    metadata:
+      name: upg-loadme
+      labels:
+        app: upg-loadme
+    spec:
+      tolerations:
+        - key: exampleTaint
+          value: "true"
+          effect: NoSchedule
+      containers:
+        - name: upg-loadme
+          image: 'public.ecr.aws/h0w5l1p0/loadme_app' # Replace with your ECR repository details
+          resources:
+            requests:
+              cpu: 800m
+              memory: 400Mi
+            limits:
+              cpu: 1000m
+              memory: 400Mi
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
+      dnsPolicy: ClusterFirst
